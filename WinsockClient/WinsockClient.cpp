@@ -52,5 +52,25 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // 서버에 연결
+    iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+    if (iResult == SOCKET_ERROR)
+    {
+        closesocket(ConnectSocket);
+        ConnectSocket = INVALID_SOCKET;
+    }
+    
+    // getaddrinfo는 서버 주소에 해당하는 연결 후보들을 연결 리스트로 반환한다.
+    // 첫 번째 주소로 connect에 실패하면 다음 주소도 시도할 수 있다.
+    // 이 예제에서는 재시도하지 않고 결과를 해제한 뒤 오류 메시지를 출력한다.
+
+    freeaddrinfo(result);
+    if (ConnectSocket == INVALID_SOCKET)
+    {
+        printf("Unable to connect to server!\n");
+        WSACleanup();
+        return 1;
+    }
+
     return 0;
 }
