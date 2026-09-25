@@ -2,7 +2,7 @@
 #include <ws2tcpip.h>
 #include <stdio.h>
 
-#pragma comment(lib, "Ws2_32.lib");
+#pragma comment(lib, "Ws2_32.lib")
 
 #define DEFAULT_PORT "27015"
 #define DEFAULT_BUFLEN 512
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    int recvbuflen = DEFAULT_BUFLEN;;
+    int recvbuflen = DEFAULT_BUFLEN;
 
     const char* sendbuf = "this is a test";
     char recvbuf[DEFAULT_BUFLEN];
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    printf("Bytes Sent: %ld\n", iResult);
+    printf("Bytes Sent: %d\n", iResult);
 
     // 더 이상 전송할 데이터가 없으므로 연결의 송신을 종료
     // 송신을 종료한 후에도 ConnectSocket을 사용하여 데이터 수신이 가능하다
@@ -116,10 +116,14 @@ int main(int argc, char* argv[])
         }
         else
         {
-            printf("recv failed: %d\n", WSAGetLastError());
+            printf("recv failed with error: %d\n", WSAGetLastError());
         }
     }
     while (iResult > 0);
 
+    // 사용한 소켓과 Winsock 자원 정리
+    closesocket(ConnectSocket);
+    WSACleanup();
+    
     return 0;
 }
